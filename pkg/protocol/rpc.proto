@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package protocol;
+
+service Dusty {
+    rpc Setup (SetupRequest) returns (RegularReply) {}
+}
+
+message RegularReply {
+    string message = 1;
+    bool error = 2;
+}
+
+message SetupRequest {
+    string username = 1;
+    string specsRepo = 2;
+    int32 vmMemory = 3;
+}
