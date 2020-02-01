@@ -23,12 +23,9 @@ configuration values tailored to your system.`,
 			}
 
 			// TODO: validate user repo or vmmemory?
-			username, _ := cmd.Flags().GetString("username")
-			specsRepo, _ := cmd.Flags().GetString("specs-repo")
-			vmMemory, _ := cmd.Flags().GetInt32("vm-memory")
 
 			fmt.Println("before calling conn.Setup()")
-			err = conn.Setup(username, specsRepo, vmMemory)
+			err = conn.Setup(c.clt.username, c.clt.specsRepo, int32(c.clt.vmMemory))
 			if err != nil {
 				return err
 			}

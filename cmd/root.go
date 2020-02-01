@@ -64,7 +64,7 @@ to quickly create a Cobra application.`,
 	c.addUpgradeCmd()
 	c.addValidateCmd()
 
-	rootCmd.Flags().BoolVarP(&c.clt.daemonized, "daemonized", "d", false, "Run dusty daemon")
+	rootCmd.Flags().BoolP("daemonized", "d", false, "Run dusty daemon")
 
 	return rootCmd, nil
 }
