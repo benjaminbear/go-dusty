@@ -15,4 +15,5 @@ message SetupRequest {
     string username = 1;
     string specsRepo = 2;
     int32 vmMemory = 3;
+    bool update = 4;
 }

@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/schlund/go-dusty/pkg/rpcclient"
+	"github.com/schlund/go-dusty/pkg/commands"
 
 	"github.com/spf13/cobra"
 )
@@ -17,20 +17,8 @@ func (c *cmd) addSetupCmd() {
 configuration values tailored to your system.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			fmt.Println("setup called")
-			conn, err := rpcclient.CreateConnection()
-			if err != nil {
-				return err
-			}
 
-			// TODO: validate user repo or vmmemory?
-
-			fmt.Println("before calling conn.Setup()")
-			err = conn.Setup(c.clt.username, c.clt.specsRepo, int32(c.clt.vmMemory))
-			if err != nil {
-				return err
-			}
-
-			err = conn.Close()
+			err := commands.SetupDustyConfig(c.clt.username, c.clt.specsRepo, c.clt.vmMemory, !c.clt.noUpdate)
 			if err != nil {
 				return err
 			}

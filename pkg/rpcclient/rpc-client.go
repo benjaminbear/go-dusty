@@ -17,7 +17,7 @@ type rpcConn struct {
 }
 
 type RpcConnection interface {
-	Setup(username string, specsRepo string, vmMemory int32) error
+	Setup(username string, specsRepo string, vmMemory int32, update bool) error
 	Close() error
 }
 
@@ -44,13 +44,14 @@ func (r *rpcConn) Close() error {
 	return r.connection.Close()
 }
 
-func (r *rpcConn) Setup(username string, specsRepo string, vmMemory int32) error {
+func (r *rpcConn) Setup(username string, specsRepo string, vmMemory int32, update bool) error {
 	defer r.cancel()
 
 	request := &protocol.SetupRequest{
 		Username:  username,
 		SpecsRepo: specsRepo,
 		VmMemory:  vmMemory,
+		Update:    update,
 	}
 
 	reply, err := r.client.Setup(r.context, request)
