@@ -17,11 +17,11 @@ type rpcServer struct {
 }
 
 func (s *rpcServer) Setup(ctx context.Context, in *protocol.SetupRequest) (*protocol.RegularReply, error) {
-	log.Println("Setup called")
+	reply := &protocol.RegularReply{}
 
 	conf, err := config.LoadConfiguration()
 	if err != nil {
-		return protocol.CreateRegularErrorReply(err), nil
+		return reply.AddError(err), nil
 	}
 
 	conf.SetUsername(in.Username)
@@ -31,10 +31,17 @@ func (s *rpcServer) Setup(ctx context.Context, in *protocol.SetupRequest) (*prot
 
 	err = conf.SaveConfiguration()
 	if err != nil {
-		return protocol.CreateRegularErrorReply(err), nil
+		return reply.AddError(err), nil
 	}
 
-	return &protocol.RegularReply{Message: "Successfully added config"}, nil
+	// TODO: Implement warning system? (dusty original)
+
+	if in.Update {
+		reply.AddMessage("Pulling latest updates for all active managed repos:")
+		// TODO: update spcecs and download repo
+	}
+
+	return reply.AddMessage("Initial setup completed. You should now be able to use Dusty!"), nil
 }
 
 func RunServer() {
