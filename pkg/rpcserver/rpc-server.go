@@ -2,10 +2,17 @@ package rpcserver
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
+	"path/filepath"
+
+	"github.com/schlund/go-dusty/constants"
+
+	"github.com/schlund/go-dusty/pkg/sshhandler"
 
 	"github.com/schlund/go-dusty/pkg/config"
+	"gopkg.in/src-d/go-git.v4"
 
 	"github.com/schlund/go-dusty/pkg/protocol"
 
@@ -27,6 +34,7 @@ func (s *rpcServer) Setup(ctx context.Context, in *protocol.SetupRequest) (*prot
 	conf.SetUsername(in.Username)
 	conf.SetSpecsRepo(in.SpecsRepo)
 	conf.SetVmMemorySize(int(in.VmMemory))
+	conf.SetSSHKeyPath(in.SshKeyPath)
 	conf.SetSetupHasRun()
 
 	err = conf.SaveConfiguration()
@@ -38,7 +46,45 @@ func (s *rpcServer) Setup(ctx context.Context, in *protocol.SetupRequest) (*prot
 
 	if in.Update {
 		reply.AddMessage("Pulling latest updates for all active managed repos:")
-		// TODO: update spcecs and download repo
+
+		repoPath, err := defaultReposPath()
+		if err != nil {
+			return reply.AddError(err), nil
+		}
+
+		parsedUrl, err := sshhandler.ParseUrl(conf.GetSpecsRepo())
+		if err != nil {
+			return reply.AddError(err), nil
+		}
+
+		opts := &git.CloneOptions{
+			URL: parsedUrl.String(),
+		}
+
+		if parsedUrl.Scheme == "ssh" {
+			// TODO: update specs and download repo
+			opts.Auth, err = sshhandler.ParsePrivateKey(conf.GetSSHKeyPath())
+			if err != nil {
+				return reply.AddError(err), nil
+			}
+
+			err := sshhandler.AddHostIfMissing(parsedUrl.Host, constants.DefaultKnownHostsPath)
+			if err != nil {
+				return reply.AddError(err), nil
+			}
+		}
+
+		path, err := sshhandler.BuildRepoPath(parsedUrl)
+		if err != nil {
+			return reply.AddError(err), nil
+		}
+
+		_, err = git.PlainClone(filepath.Join(repoPath, path), false, opts)
+		if err != nil {
+			return reply.AddError(err), nil
+		}
+
+		reply.AddMessage(fmt.Sprintf("Updating local repo %s", conf.GetSpecsRepo()))
 	}
 
 	return reply.AddMessage("Initial setup completed. You should now be able to use Dusty!"), nil

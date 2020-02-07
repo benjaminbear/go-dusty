@@ -15,5 +15,6 @@ message SetupRequest {
     string username = 1;
     string specsRepo = 2;
     int32 vmMemory = 3;
-    bool update = 4;
+    string sshKeyPath = 4;
+    bool update = 5;
 }

@@ -14,6 +14,7 @@ type Config struct {
 	EnvOverrides  map[string]map[string]string `yaml:"dusty_env_overrides"`
 	RepoOverrides map[string]string            `yaml:"repo_overrides"`
 	Username      string                       `yaml:"username"`
+	SSHKeyPath    string                       `yaml:"ssh_key_path"`
 	SetupHasRun   bool                         `yaml:"setup_has_run"`
 	SpecsRepo     string                       `yaml:"specs_repo"`
 	VmMemorySize  int                          `yaml:"vm_memory_size"`
@@ -27,10 +28,15 @@ type Configurator interface {
 	SetRepoOverrides(repository, override string)
 	UnsetRepoOverride(repository string)
 	SetUsername(username string)
+	GetUsername() string
+	SetSSHKeyPath(key string)
+	GetSSHKeyPath() string
 	SetSetupHasRun()
 	HasSetupRun() bool
 	SetSpecsRepo(repository string)
+	GetSpecsRepo() string
 	SetVmMemorySize(size int)
+	GetVmMemorySize() int
 	SaveConfiguration() error
 }
 
@@ -147,6 +153,10 @@ func (c *Config) SetUsername(username string) {
 	c.Username = username
 }
 
+func (c *Config) GetUsername() string {
+	return c.Username
+}
+
 func (c *Config) SetSetupHasRun() {
 	c.SetupHasRun = true
 }
@@ -157,10 +167,24 @@ func (c *Config) HasSetupRun() bool {
 
 func (c *Config) SetSpecsRepo(repository string) {
 	c.SpecsRepo = repository
-	// TODO: validate repository?
+}
+
+func (c *Config) GetSpecsRepo() string {
+	return c.SpecsRepo
 }
 
 func (c *Config) SetVmMemorySize(size int) {
 	c.VmMemorySize = size
-	// TODO: validate or manipulate VM Memory Size?
+}
+
+func (c *Config) GetVmMemorySize() int {
+	return c.VmMemorySize
+}
+
+func (c *Config) SetSSHKeyPath(key string) {
+	c.SSHKeyPath = key
+}
+
+func (c *Config) GetSSHKeyPath() string {
+	return c.SSHKeyPath
 }

@@ -17,12 +17,12 @@ type rpcConn struct {
 }
 
 type RpcConnection interface {
-	Setup(username string, specsRepo string, vmMemory int32, update bool) error
+	Setup(username string, specsRepo string, vmMemory int32, sshKeyPath string, update bool) error
 	Close() error
 }
 
 func CreateConnection() (RpcConnection, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
 	// address can be "unix:////var/run/dusty.sock" in unix
 	conn, err := grpc.DialContext(ctx, protocol.Address, grpc.WithInsecure())
@@ -44,14 +44,15 @@ func (r *rpcConn) Close() error {
 	return r.connection.Close()
 }
 
-func (r *rpcConn) Setup(username string, specsRepo string, vmMemory int32, update bool) error {
+func (r *rpcConn) Setup(username string, specsRepo string, vmMemory int32, sshKeyPath string, update bool) error {
 	defer r.cancel()
 
 	request := &protocol.SetupRequest{
-		Username:  username,
-		SpecsRepo: specsRepo,
-		VmMemory:  vmMemory,
-		Update:    update,
+		Username:   username,
+		SpecsRepo:  specsRepo,
+		VmMemory:   vmMemory,
+		SshKeyPath: sshKeyPath,
+		Update:     update,
 	}
 
 	reply, err := r.client.Setup(r.context, request)

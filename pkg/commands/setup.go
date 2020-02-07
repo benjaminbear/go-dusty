@@ -13,11 +13,11 @@ import (
 	"github.com/schlund/go-dusty/pkg/rpcclient"
 )
 
-func SetupDustyConfig(username string, specsRepo string, vmMemory int, update bool) (err error) {
+func SetupDustyConfig(username string, specsRepo string, vmMemory int, sshKeyPath string, update bool) (err error) {
 	fmt.Println("We just need to verify a few settings before we get started.")
 
 	if username != "" {
-		fmt.Printf("Setting mac_username to %s based on flag\n", username)
+		fmt.Printf("Setting username to %s based on flag\n", username)
 	} else {
 		username, err = getUsername()
 		if err != nil {
@@ -28,6 +28,15 @@ func SetupDustyConfig(username string, specsRepo string, vmMemory int, update bo
 	err = verifyUsername(username)
 	if err != nil {
 		return err
+	}
+
+	if sshKeyPath != "" {
+		fmt.Printf("Setting ssh_key_path to %s based on flag\n", sshKeyPath)
+	} else {
+		sshKeyPath, err = getSSHKeyPath()
+		if err != nil {
+			return err
+		}
 	}
 
 	if specsRepo != "" {
@@ -53,7 +62,7 @@ func SetupDustyConfig(username string, specsRepo string, vmMemory int, update bo
 		return err
 	}
 
-	err = conn.Setup(username, specsRepo, int32(vmMemory), update)
+	err = conn.Setup(username, specsRepo, int32(vmMemory), sshKeyPath, update)
 	if err != nil {
 		return err
 	}
@@ -157,4 +166,22 @@ func getRecommendedVmSize(sysMemory int) int {
 	} else {
 		return 2 * (1 << 10)
 	}
+}
+
+func getSSHKeyPath() (string, error) {
+	fmt.Println()
+	fmt.Println("The private ssh key will be used to checkout git repositories")
+	fmt.Print("Input the path to your private ssh key, or leave blank to use the default one ($HOME/.ssh/id_rsa) or none")
+
+	sshKeyPath, err := inputparse.AskForWord(false)
+	if err != nil {
+		return sshKeyPath, err
+	}
+
+	if sshKeyPath == "" {
+		fmt.Println("Using default ssh key", constants.DefaultSSHKeyPath)
+		sshKeyPath = constants.DefaultSSHKeyPath
+	}
+
+	return sshKeyPath, nil
 }
