@@ -60,7 +60,7 @@ func BuildRepoPath(url *url.URL) (string, error) {
 	}
 
 	path := url.Host
-	splitPath := strings.Split(url.Path, "/")
+	splitPath := strings.Split(strings.TrimSuffix(url.Path, ".git"), "/")
 
 	for _, elem := range splitPath {
 		if elem != "" {
