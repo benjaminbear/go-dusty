@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/schlund/go-dusty/pkg/commands"
+	"github.com/benjaminbear/go-dusty/pkg/commands"
 
 	"github.com/spf13/cobra"
 )

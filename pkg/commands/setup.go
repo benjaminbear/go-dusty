@@ -6,11 +6,11 @@ import (
 
 	"github.com/shirou/gopsutil/mem"
 
-	"github.com/schlund/go-dusty/constants"
+	"github.com/benjaminbear/go-dusty/constants"
 
-	"github.com/schlund/go-dusty/pkg/inputparse"
+	"github.com/benjaminbear/go-dusty/pkg/inputparse"
 
-	"github.com/schlund/go-dusty/pkg/rpcclient"
+	"github.com/benjaminbear/go-dusty/pkg/rpcclient"
 )
 
 func SetupDustyConfig(username string, specsRepo string, vmMemory int, sshKeyPath string, update bool) (err error) {

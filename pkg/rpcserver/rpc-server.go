@@ -7,14 +7,14 @@ import (
 	"net"
 	"path/filepath"
 
-	"github.com/schlund/go-dusty/constants"
+	"github.com/benjaminbear/go-dusty/constants"
 
-	"github.com/schlund/go-dusty/pkg/sshhandler"
+	"github.com/benjaminbear/go-dusty/pkg/sshhandler"
 
-	"github.com/schlund/go-dusty/pkg/config"
+	"github.com/benjaminbear/go-dusty/pkg/config"
 	"gopkg.in/src-d/go-git.v4"
 
-	"github.com/schlund/go-dusty/pkg/protocol"
+	"github.com/benjaminbear/go-dusty/pkg/protocol"
 
 	"google.golang.org/grpc"
 )

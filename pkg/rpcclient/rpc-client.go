@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/schlund/go-dusty/pkg/protocol"
+	"github.com/benjaminbear/go-dusty/pkg/protocol"
 
 	"google.golang.org/grpc"
 )

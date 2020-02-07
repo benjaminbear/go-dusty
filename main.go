@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/schlund/go-dusty/cmd"
+	"github.com/benjaminbear/go-dusty/cmd"
 )
 
 func main() {

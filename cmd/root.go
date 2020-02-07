@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/schlund/go-dusty/pkg/rpcserver"
+	"github.com/benjaminbear/go-dusty/pkg/rpcserver"
 
 	"github.com/spf13/cobra"
 )
